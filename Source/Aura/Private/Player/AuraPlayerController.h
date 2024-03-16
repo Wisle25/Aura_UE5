@@ -9,7 +9,7 @@
 class UInputMappingContext;
 
 UCLASS()
-class AURA_API AAuraPlayerController : public APlayerController
+class AAuraPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 

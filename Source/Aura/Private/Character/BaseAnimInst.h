@@ -10,7 +10,7 @@ class ACharacterBase;
 class UCharacterMovementComponent;
 
 UCLASS()
-class AURA_API UBaseAnimInst : public UAnimInstance
+class UBaseAnimInst : public UAnimInstance
 {
 	GENERATED_BODY()
 
