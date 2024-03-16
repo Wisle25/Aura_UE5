@@ -3,16 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "Character/CharacterBase.h"
 #include "PlayerCharacter.generated.h"
 
+class AAuraPlayerState;
 class UCameraComponent;
 class USpringArmComponent;
 class UInputAction;
 struct FInputActionValue;
 
 UCLASS()
-class APlayerCharacter : public ACharacterBase
+class APlayerCharacter : public ACharacterBase, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -21,10 +23,18 @@ public:
 
 	// ***===== Lifecycles =====*** //
 
+	virtual void PossessedBy(AController* NewController) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 
 private:
 	void AssetInitializer();
+
+	// ***===== References =====*** //
+
+	UPROPERTY()
+	TWeakObjectPtr<AAuraPlayerState> AuraPlayerState;
+
+	virtual void OnRep_PlayerState() override;
 
 	// ***===== Components =====*** //
 
@@ -42,4 +52,8 @@ private:
 	// ***===== Locomotion =====*** //
 
 	void Move(const FInputActionValue& InputValue);
+
+	// ***===== Ability System =====*** //
+
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 };

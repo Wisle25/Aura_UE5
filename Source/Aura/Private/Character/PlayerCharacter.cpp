@@ -1,9 +1,11 @@
 // Copyright, Wisle25
 
 #include "Character/PlayerCharacter.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Player/AuraPlayerState.h"
 
 #include "EnhancedInputComponent.h"
 
@@ -44,6 +46,15 @@ void APlayerCharacter::AssetInitializer()
 //////////////////////////////////////////////////////////
 // ==================== Lifecycles ==================== //
 
+void APlayerCharacter::PossessedBy(AController* NewController)
+{
+    Super::PossessedBy(NewController);
+
+    // Getting reference
+    AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+    AuraPlayerState->GetAbilitySystem()->InitAbilityActorInfo(AuraPlayerState.Get(), this);
+}
+
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* Input)
 {
     Super::SetupPlayerInputComponent(Input);
@@ -51,6 +62,16 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* Input)
     UEnhancedInputComponent* EnhancedInput = CastChecked<UEnhancedInputComponent>(Input);
 
     EnhancedInput->BindAction(MoveAction.LoadSynchronous(), ETriggerEvent::Triggered, this, &ThisClass::Move);
+}
+
+//////////////////////////////////////////////////////////
+// ==================== References ==================== //
+
+void APlayerCharacter::OnRep_PlayerState()
+{
+    Super::OnRep_PlayerState();
+
+    AuraPlayerState->GetAbilitySystem()->InitAbilityActorInfo(AuraPlayerState.Get(), this);
 }
 
 //////////////////////////////////////////////////////////
@@ -70,5 +91,13 @@ void APlayerCharacter::Move(const FInputActionValue& InputValue)
     // Apply
     AddMovementInput(Forward, Value.Y);
     AddMovementInput(Right, Value.X);
+}
+
+//////////////////////////////////////////////////////////////
+// ==================== Ability System ==================== //
+
+UAbilitySystemComponent* APlayerCharacter::GetAbilitySystemComponent() const 
+{
+    return AuraPlayerState->GetAbilitySystem();
 }
 

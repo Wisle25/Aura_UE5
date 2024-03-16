@@ -1,6 +1,8 @@
 // Copyright, Wisle25
 
 #include "Character/EnemyCharacter.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/AuraAttributeSet.h"
 
 AEnemyCharacter::AEnemyCharacter()
 {
@@ -10,6 +12,25 @@ AEnemyCharacter::AEnemyCharacter()
 
     // Weapon
     Weapon->SetCustomDepthStencilValue(250);
+
+    // Ability System
+    AbilitySystem = CreateDefaultSubobject<UAuraAbilitySystemComponent>("Ability System");
+    AbilitySystem->SetIsReplicated(true);
+    AbilitySystem->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+
+    // Attribute Set
+    AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("Attribute Set");
+}
+
+//////////////////////////////////////////////////////////
+// ==================== Lifecycles ==================== //
+
+void AEnemyCharacter::BeginPlay()
+{
+    Super::BeginPlay();
+
+    // ...
+    AbilitySystem->InitAbilityActorInfo(this, this);
 }
 
 ///////////////////////////////////////////////////////////
@@ -25,4 +46,9 @@ void AEnemyCharacter::UnHighlight()
 {
     GetMesh()->SetRenderCustomDepth(false);
     Weapon   ->SetRenderCustomDepth(false);
+}
+
+UAbilitySystemComponent* AEnemyCharacter::GetAbilitySystemComponent() const 
+{
+    return AbilitySystem;
 }

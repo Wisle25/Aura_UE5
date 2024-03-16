@@ -23,4 +23,5 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category=Combat)
 	TObjectPtr<USkeletalMeshComponent> Weapon;
+
 };

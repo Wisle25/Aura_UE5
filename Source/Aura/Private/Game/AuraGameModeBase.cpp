@@ -1,6 +1,7 @@
 // Copyright, Wisle25
 
 #include "Game/AuraGameModeBase.h"
+#include "GameFramework/PlayerState.h"
 
 AAuraGameModeBase::AAuraGameModeBase()
 {
@@ -21,4 +22,9 @@ void AAuraGameModeBase::AssetInitializer()
         TEXT("/Script/Aura.AuraPlayerController")
     );
     PlayerControllerClass = PlayerControllerAsset.Class;
+
+    static ConstructorHelpers::FClassFinder<APlayerState> PlayerStateAsset(
+        TEXT("/Script/Aura.AuraPlayerState")
+    );
+    PlayerStateClass = PlayerStateAsset.Class;
 }
