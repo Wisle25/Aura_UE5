@@ -1,6 +1,8 @@
 // Copyright, Wisle25
 
 #include "Player/AuraPlayerController.h"
+#include "Interfaces/EnemyInterface.h"
+
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 
@@ -30,6 +32,13 @@ void AAuraPlayerController::BeginPlay()
     UseInputContext();
 }
 
+void AAuraPlayerController::PlayerTick(float DeltaTime)
+{
+    Super::PlayerTick(DeltaTime);
+
+    CursorTrace();    
+}
+
 /////////////////////////////////////////////////////
 // ==================== Input ==================== //
 
@@ -51,4 +60,31 @@ void AAuraPlayerController::UseInputContext()
     InputModeData.SetHideCursorDuringCapture(false);
 
     SetInputMode(InputModeData);
+}
+
+///////////////////////////////////////////////////////////
+// ==================== Enemy Interaction ==================== //
+
+void AAuraPlayerController::CursorTrace()
+{
+    FHitResult HitResult;
+    GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, HitResult);
+
+    if (!HitResult.bBlockingHit) return;
+
+    LastEnemy = CurrentEnemy;
+    CurrentEnemy = Cast<IEnemyInterface>(HitResult.GetActor());
+
+    // Highlight the enemy
+    if (!LastEnemy && CurrentEnemy)
+        CurrentEnemy->Highlight();
+    else if (LastEnemy && !CurrentEnemy)
+    {
+        LastEnemy->UnHighlight();
+    }
+    else if (LastEnemy != CurrentEnemy)
+    {
+        LastEnemy   ->UnHighlight();
+        CurrentEnemy->Highlight();
+    }
 }

@@ -7,6 +7,7 @@
 #include "AuraPlayerController.generated.h"
 
 class UInputMappingContext;
+class IEnemyInterface;
 
 UCLASS()
 class AAuraPlayerController : public APlayerController
@@ -15,6 +16,10 @@ class AAuraPlayerController : public APlayerController
 
 public:
 	AAuraPlayerController();
+
+	// ***===== Lifecycles =====*** //
+
+	virtual void PlayerTick(float DeltaTime) override;
 
 protected:
 	// ***===== Lifecycles =====*** //
@@ -30,4 +35,11 @@ private:
 	TSoftObjectPtr<UInputMappingContext> InputContext;
 
 	void UseInputContext();
+
+	// ***===== Enemy Interaction =====*** //
+
+	IEnemyInterface* CurrentEnemy;
+	IEnemyInterface* LastEnemy;
+
+	void CursorTrace();
 };
