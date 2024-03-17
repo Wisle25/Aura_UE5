@@ -32,4 +32,8 @@ public:
 	{
 		return AbilitySystem;
 	}
+	FORCEINLINE UAuraAttributeSet* GetAttributeSet() const
+	{
+		return AttributeSet;
+	}
 };

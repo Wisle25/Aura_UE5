@@ -11,10 +11,23 @@ class AAuraPlayerState;
 class UAbilitySystemComponent;
 class UAttributeSet;
 
+struct FWidgetControllerParams
+{
+	AAuraPlayerController* PlayerController;
+	AAuraPlayerState* PlayerState;
+	UAbilitySystemComponent* AbilitySystem;
+	UAttributeSet* AttributeSet;
+};
+
 UCLASS()
 class UWidgetController : public UObject
 {
 	GENERATED_BODY()
+
+public:
+	// ***===== References =====*** //
+
+	void InitReferences(const FWidgetControllerParams& Params);
 
 protected:
 	// ***===== References =====*** //

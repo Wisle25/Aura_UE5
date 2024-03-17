@@ -13,6 +13,11 @@ class UAuraUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+public:
+	// ***===== References =====*** //
+
+	void SetWidgetController(UWidgetController* InController);
+
 protected:
 	// ***===== References =====*** //
 

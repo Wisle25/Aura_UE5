@@ -2,6 +2,7 @@
 
 #include "Game/AuraGameModeBase.h"
 #include "GameFramework/PlayerState.h"
+#include "GameFramework/HUD.h"
 
 AAuraGameModeBase::AAuraGameModeBase()
 {
@@ -27,4 +28,9 @@ void AAuraGameModeBase::AssetInitializer()
         TEXT("/Script/Aura.AuraPlayerState")
     );
     PlayerStateClass = PlayerStateAsset.Class;
+    
+    static ConstructorHelpers::FClassFinder<AHUD> HUDAsset(
+        TEXT("/Script/Aura.AuraHUD")
+    );
+    HUDClass = HUDAsset.Class;
 }

@@ -7,6 +7,7 @@
 #include "Character/CharacterBase.h"
 #include "PlayerCharacter.generated.h"
 
+class AAuraPlayerController;
 class AAuraPlayerState;
 class UCameraComponent;
 class USpringArmComponent;
@@ -32,9 +33,12 @@ private:
 	// ***===== References =====*** //
 
 	UPROPERTY()
+	TWeakObjectPtr<AAuraPlayerController> AuraPlayerController;
+
+	UPROPERTY()
 	TWeakObjectPtr<AAuraPlayerState> AuraPlayerState;
 
-	virtual void OnRep_PlayerState() override;
+	virtual void OnRep_Controller() override;
 
 	// ***===== Components =====*** //
 
@@ -55,5 +59,6 @@ private:
 
 	// ***===== Ability System =====*** //
 
+	void InitAbilitySystem();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 };
