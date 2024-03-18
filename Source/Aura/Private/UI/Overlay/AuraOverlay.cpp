@@ -22,5 +22,6 @@ void UAuraOverlay::BindEvents()
     if (UOverlayWidgetController* OverlayController = Cast<UOverlayWidgetController>(WidgetController))
     {
         OverlayController->OnHealthChanged.AddUObject(HealthGlobe, &UProgressGlobeBase::SetPercentage);
+        OverlayController->OnManaChanged  .AddUObject(ManaGlobe, &UProgressGlobeBase::SetPercentage);
     }
 }

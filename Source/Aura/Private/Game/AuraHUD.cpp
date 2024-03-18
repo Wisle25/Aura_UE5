@@ -35,6 +35,7 @@ void AAuraHUD::InitOverlay(const FWidgetControllerParams& WCParams)
     // Controller
     OverlayWidgetController = NewObject<UOverlayWidgetController>(this, OverlayWidgetControllerClass);
     OverlayWidgetController->InitReferences(WCParams);
+    OverlayWidgetController->BindOnChanges();
 
     // Widget
     OverlayWidget = CreateWidget<UAuraOverlay>(GetOwningPlayerController(), OverlayWidgetClass);

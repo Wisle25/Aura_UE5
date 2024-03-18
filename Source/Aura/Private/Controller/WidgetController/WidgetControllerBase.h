@@ -30,6 +30,7 @@ public:
 	void InitReferences(const FWidgetControllerParams& Params);
 
 	virtual void BroadcastInitialValues() {}
+	virtual void BindOnChanges() {}
 
 protected:
 	// ***===== References =====*** //

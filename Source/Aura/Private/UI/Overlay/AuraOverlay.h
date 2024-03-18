@@ -24,7 +24,7 @@ protected:
 	TObjectPtr<UProgressGlobeBase> HealthGlobe;
 
 	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<UProgressGlobeBase> MannaGlobe;
+	TObjectPtr<UProgressGlobeBase> ManaGlobe;
 
 	void BindEvents();
 };
