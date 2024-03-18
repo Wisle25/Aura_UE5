@@ -6,7 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "AuraHUD.generated.h"
 
-class UAuraUserWidget;
+class UAuraOverlay;
 class UOverlayWidgetController;
 struct FWidgetControllerParams;
 
@@ -21,7 +21,7 @@ public:
 	// ***===== Overlay HUD =====*** //
 
 	UPROPERTY()
-	TObjectPtr<UAuraUserWidget> OverlayWidget;
+	TObjectPtr<UAuraOverlay> OverlayWidget;
 
 	UPROPERTY()
 	TObjectPtr<UOverlayWidgetController> OverlayWidgetController;
@@ -35,7 +35,7 @@ private:
 	// ***===== Overlay HUD =====*** //
 
 	UPROPERTY(EditDefaultsOnly, Category=OverlayHUD)
-	TSubclassOf<UAuraUserWidget> OverlayWidgetClass;
+	TSubclassOf<UAuraOverlay> OverlayWidgetClass;
 
 	UPROPERTY(EditDefaultsOnly, Category=OverlayHUD)
 	TSubclassOf<UOverlayWidgetController> OverlayWidgetControllerClass;

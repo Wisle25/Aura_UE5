@@ -1,8 +1,8 @@
 // Copyright, Wisle25
 
-#include "UI/AuraHUD.h"
-#include "UI/Widget/AuraUserWidget.h"
-#include "UI/WidgetController/OverlayWidgetController.h"
+#include "Game/AuraHUD.h"
+#include "UI/Overlay/AuraOverlay.h"
+#include "Controller/WidgetController/OverlayWidgetController.h"
 
 AAuraHUD::AAuraHUD()
 {
@@ -13,7 +13,7 @@ AAuraHUD::AAuraHUD()
 void AAuraHUD::AssetInitializer()
 {
     // *** Overlay HUD *** //
-    static ConstructorHelpers::FClassFinder<UAuraUserWidget> OverlayWidgetAsset(
+    static ConstructorHelpers::FClassFinder<UAuraOverlay> OverlayWidgetAsset(
         TEXT("/Game/Blueprints/UI/Overlay/WBP_Overlay")
     );
     OverlayWidgetClass = OverlayWidgetAsset.Class;
@@ -29,12 +29,18 @@ void AAuraHUD::AssetInitializer()
 
 void AAuraHUD::InitOverlay(const FWidgetControllerParams& WCParams)
 {
+    checkf(OverlayWidgetControllerClass, TEXT("OverlayWidgetControllerClass is not set!"))
+    checkf(OverlayWidgetClass, TEXT("OverlayWidgeClass is not set!"))
+
     // Controller
     OverlayWidgetController = NewObject<UOverlayWidgetController>(this, OverlayWidgetControllerClass);
     OverlayWidgetController->InitReferences(WCParams);
 
     // Widget
-    OverlayWidget = CreateWidget<UAuraUserWidget>(GetOwningPlayerController(), OverlayWidgetClass);
-    OverlayWidget->AddToViewport();
+    OverlayWidget = CreateWidget<UAuraOverlay>(GetOwningPlayerController(), OverlayWidgetClass);
     OverlayWidget->SetWidgetController(OverlayWidgetController);
+    OverlayWidget->AddToViewport();
+
+    // Broadcast the initial values
+    OverlayWidgetController->BroadcastInitialValues();
 }

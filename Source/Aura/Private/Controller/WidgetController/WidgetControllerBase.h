@@ -4,23 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "WidgetController.generated.h"
+#include "WidgetControllerBase.generated.h"
 
 class AAuraPlayerController;
 class AAuraPlayerState;
 class UAbilitySystemComponent;
-class UAttributeSet;
+class UAuraAttributeSet;
 
 struct FWidgetControllerParams
 {
 	AAuraPlayerController* PlayerController;
 	AAuraPlayerState* PlayerState;
 	UAbilitySystemComponent* AbilitySystem;
-	UAttributeSet* AttributeSet;
+	UAuraAttributeSet* AttributeSet;
 };
 
 UCLASS()
-class UWidgetController : public UObject
+class UWidgetControllerBase : public UObject
 {
 	GENERATED_BODY()
 
@@ -28,6 +28,8 @@ public:
 	// ***===== References =====*** //
 
 	void InitReferences(const FWidgetControllerParams& Params);
+
+	virtual void BroadcastInitialValues() {}
 
 protected:
 	// ***===== References =====*** //
@@ -42,5 +44,5 @@ protected:
 	TWeakObjectPtr<UAbilitySystemComponent> AbilitySystem;
 
 	UPROPERTY()
-	TWeakObjectPtr<UAttributeSet> AttributeSet;
+	TWeakObjectPtr<UAuraAttributeSet> AttributeSet;
 };

@@ -4,12 +4,12 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Camera/CameraComponent.h"
+#include "Game/AuraHUD.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
-#include "UI/AuraHUD.h"
-#include "UI/WidgetController/WidgetController.h"
+#include "Controller/WidgetController/WidgetControllerBase.h"
 
 #include "EnhancedInputComponent.h"
 

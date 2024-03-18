@@ -4,23 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "AuraUserWidget.generated.h"
+#include "AuraUserWidgetBase.generated.h"
 
-class UWidgetController;
+class UWidgetControllerBase;
 
 UCLASS()
-class UAuraUserWidget : public UUserWidget
+class UAuraUserWidgetBase : public UUserWidget
 {
 	GENERATED_BODY()
 
 public:
 	// ***===== References =====*** //
 
-	void SetWidgetController(UWidgetController* InController);
+	void SetWidgetController(UWidgetControllerBase* InController);
 
 protected:
 	// ***===== References =====*** //
 
 	UPROPERTY()	
-	TWeakObjectPtr<UWidgetController> WidgetController;
+	TWeakObjectPtr<UWidgetControllerBase> WidgetController;
 };
