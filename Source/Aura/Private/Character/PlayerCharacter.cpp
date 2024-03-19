@@ -12,6 +12,7 @@
 #include "Controller/WidgetController/WidgetControllerBase.h"
 
 #include "EnhancedInputComponent.h"
+#include "PlayerCharacter.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -54,11 +55,8 @@ void APlayerCharacter::PossessedBy(AController* NewController)
 {
     Super::PossessedBy(NewController);
 
-    // Getting reference
-    AuraPlayerController = Cast<AAuraPlayerController>(NewController);
-    AuraPlayerState      = GetPlayerState<AAuraPlayerState>();
-
     // ...
+    InitPlayerReference(NewController);
     InitAbilitySystem();
 }
 
@@ -74,10 +72,18 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* Input)
 //////////////////////////////////////////////////////////
 // ==================== References ==================== //
 
-void APlayerCharacter::OnRep_Controller()
+void APlayerCharacter::InitPlayerReference(AController *NewController)
 {
-    Super::OnRep_Controller();
+    // Getting reference
+    AuraPlayerController = Cast<AAuraPlayerController>(NewController);
+    AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+}
 
+void APlayerCharacter::OnRep_PlayerState()
+{
+    Super::OnRep_PlayerState();
+
+    InitPlayerReference(GetController());
     InitAbilitySystem();
 }
 
@@ -106,11 +112,17 @@ void APlayerCharacter::Move(const FInputActionValue& InputValue)
 void APlayerCharacter::InitAbilitySystem()
 {
     // ...
-    AuraPlayerState->GetAbilitySystem()->InitAbilityActorInfo(AuraPlayerState.Get(), this);
+    if (AuraPlayerState.IsValid())
+        AuraPlayerState->GetAbilitySystem()->InitAbilityActorInfo(AuraPlayerState.Get(), this);
 
     // Init Overlay HUD
-    AAuraHUD* HUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD());
-    HUD->InitOverlay({ AuraPlayerController.Get(), AuraPlayerState.Get(), AuraPlayerState->GetAbilitySystem(), AuraPlayerState->GetAttributeSet() });
+    if (AuraPlayerController.IsValid())
+    {
+        if (AAuraHUD* HUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD()))
+        {
+            HUD->InitOverlay({ AuraPlayerController.Get(), AuraPlayerState.Get(), AuraPlayerState->GetAbilitySystem(), AuraPlayerState->GetAttributeSet() });
+        }
+    }
 }
 
 UAbilitySystemComponent* APlayerCharacter::GetAbilitySystemComponent() const 

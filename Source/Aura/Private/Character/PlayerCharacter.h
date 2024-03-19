@@ -24,13 +24,13 @@ public:
 
 	// ***===== Lifecycles =====*** //
 
-	virtual void PossessedBy(AController* NewController) override;
-	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+    virtual void PossessedBy(AController *NewController) override;
+    virtual void SetupPlayerInputComponent(UInputComponent *InputComponent) override;
 
 private:
-	void AssetInitializer();
+    void AssetInitializer();
 
-	// ***===== References =====*** //
+    // ***===== References =====*** //
 
 	UPROPERTY()
 	TWeakObjectPtr<AAuraPlayerController> AuraPlayerController;
@@ -38,7 +38,11 @@ private:
 	UPROPERTY()
 	TWeakObjectPtr<AAuraPlayerState> AuraPlayerState;
 
-	virtual void OnRep_Controller() override;
+	/** For player state, player controller, etc */
+    void InitPlayerReference(AController *NewController);
+
+	/** Client version of "PossesedBy" */
+	virtual void OnRep_PlayerState() override;
 
 	// ***===== Components =====*** //
 
