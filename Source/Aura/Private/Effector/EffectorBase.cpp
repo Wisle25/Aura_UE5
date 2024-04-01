@@ -16,22 +16,22 @@ AEffectorBase::AEffectorBase()
 	RootComponent->SetMobility(EComponentMobility::Static);
 
 	// Interaction Sphere
-	InteractionSphere = CreateDefaultSubobject<USphereComponent>("Collision Sphere");
-	InteractionSphere->SetupAttachment(RootComponent);
-	InteractionSphere->SetMobility(EComponentMobility::Static);
-	InteractionSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	InteractionSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	InteractionSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
-	InteractionSphere->SetGenerateOverlapEvents(true);
+	InteractSphere = CreateDefaultSubobject<USphereComponent>("Collision Sphere");
+	InteractSphere->SetupAttachment(RootComponent);
+	InteractSphere->SetMobility(EComponentMobility::Static);
+	InteractSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	InteractSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	InteractSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+	InteractSphere->SetGenerateOverlapEvents(true);
 
 	// Interaction Box
-	InteractionBox = CreateDefaultSubobject<UBoxComponent>("Collision Box");
-	InteractionBox->SetupAttachment(RootComponent);
-	InteractionBox->SetMobility(EComponentMobility::Static);
-	InteractionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	InteractionBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	InteractionBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
-	InteractionBox->SetGenerateOverlapEvents(true);
+	InteractBox = CreateDefaultSubobject<UBoxComponent>("Collision Box");
+	InteractBox->SetupAttachment(RootComponent);
+	InteractBox->SetMobility(EComponentMobility::Static);
+	InteractBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	InteractBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	InteractBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+	InteractBox->SetGenerateOverlapEvents(true);
 
 	// Mesh
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
@@ -82,11 +82,11 @@ void AEffectorBase::DetermineComponents()
 	switch (InteractingWith)
 	{
 	case EInteractingWith::EIW_Box:
-		if (InteractionSphere) InteractionSphere->DestroyComponent();
+		if (InteractSphere) InteractSphere->DestroyComponent();
 		break;
 	
 	case EInteractingWith::EIW_Sphere:
-		if (InteractionBox) InteractionBox->DestroyComponent();
+		if (InteractBox) InteractBox->DestroyComponent();
 		break;
 	}
 }
@@ -96,16 +96,16 @@ void AEffectorBase::DetermineComponents()
 
 void AEffectorBase::InitInteraction()
 {
-	if (InteractionSphere)
+	if (InteractSphere)
 	{
-		InteractionSphere->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnEnterInteraction);
-		InteractionSphere->OnComponentEndOverlap  .AddDynamic(this, &ThisClass::OnLeaveInteraction);
+		InteractSphere->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnEnterInteraction);
+		InteractSphere->OnComponentEndOverlap  .AddDynamic(this, &ThisClass::OnLeaveInteraction);
 	}
 
-	if (InteractionBox)
+	if (InteractBox)
 	{
-		InteractionBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnEnterInteraction);
-		InteractionBox->OnComponentEndOverlap  .AddDynamic(this, &ThisClass::OnLeaveInteraction);
+		InteractBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnEnterInteraction);
+		InteractBox->OnComponentEndOverlap  .AddDynamic(this, &ThisClass::OnLeaveInteraction);
 	}
 }
 
@@ -145,7 +145,7 @@ void AEffectorBase::ApplyEffectTo(AActor* Target)
 		// Finally apply multiple effects
 		for (const auto& GameplayEffect : GameplayEffectClasses)
 		{
-			const FGameplayEffectSpecHandle EffectSpec = TargetAS->MakeOutgoingSpec(GameplayEffect, 1.f, CtxHandle);
+			const FGameplayEffectSpecHandle EffectSpec = TargetAS->MakeOutgoingSpec(GameplayEffect, Level, CtxHandle);
 			const FActiveGameplayEffectHandle Handler  = TargetAS->ApplyGameplayEffectSpecToSelf(*EffectSpec.Data.Get());
 
 			// Add to removing query

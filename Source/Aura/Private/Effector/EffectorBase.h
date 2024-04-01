@@ -72,10 +72,10 @@ protected:
 	// * Actual Components * //
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USphereComponent> InteractionSphere;
+	TObjectPtr<USphereComponent> InteractSphere;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UBoxComponent> InteractionBox;
+	TObjectPtr<UBoxComponent> InteractBox;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> Mesh;
@@ -95,7 +95,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category=Interaction)
 	ERemoveWhen RemoveWhen = ERemoveWhen::DoNotRemove;
 
-	TMultiMap<UAbilitySystemComponent*, FActiveGameplayEffectHandle> ActiveEffectHandlers; 
+	TMultiMap<UAbilitySystemComponent*, FActiveGameplayEffectHandle> ActiveEffectHandlers;
+
+	UPROPERTY(EditAnywhere, Category=Interaction)
+	float Level = 1.f;
 
 	/** Should the effector get destroyed right after applied the gameplay effect? */
 	UPROPERTY(EditAnywhere, Category=Interaction)
