@@ -113,7 +113,10 @@ void APlayerCharacter::InitAbilitySystem()
 {
     // ...
     if (AuraPlayerState.IsValid())
+    {
         AuraPlayerState->GetAbilitySystem()->InitAbilityActorInfo(AuraPlayerState.Get(), this);
+        AuraPlayerState->GetAbilitySystem()->AbilitySystemOnSet();
+    }
 
     // Init Overlay HUD
     if (AuraPlayerController.IsValid())

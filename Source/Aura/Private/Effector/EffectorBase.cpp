@@ -167,7 +167,7 @@ void AEffectorBase::RemoveEffectFrom(AActor* Target)
 		ActiveEffectHandlers.MultiFindPointer(TargetAS, ActiveHandles);
 
 		for (const auto& ActiveHandle : ActiveHandles)
-			TargetAS->RemoveActiveGameplayEffect(*ActiveHandle, 1);
+			TargetAS->RemoveActiveGameplayEffect_NoReturn(*ActiveHandle, 1);
 
 		ActiveEffectHandlers.Remove(TargetAS);
 	}

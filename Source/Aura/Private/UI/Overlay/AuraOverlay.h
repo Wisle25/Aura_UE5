@@ -6,6 +6,7 @@
 #include "UI/AuraUserWidgetBase.h"
 #include "AuraOverlay.generated.h"
 
+class UMessageWidget;
 class UProgressGlobeBase;
 
 UCLASS()
@@ -25,6 +26,9 @@ protected:
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UProgressGlobeBase> ManaGlobe;
+
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UMessageWidget> MessageWidget;
 
 	void BindEvents();
 };

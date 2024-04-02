@@ -31,6 +31,7 @@ void AEnemyCharacter::BeginPlay()
 
     // ...
     AbilitySystem->InitAbilityActorInfo(this, this);
+    AbilitySystem->AbilitySystemOnSet();
 }
 
 ///////////////////////////////////////////////////////////

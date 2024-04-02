@@ -24,6 +24,7 @@ protected:
 	// ***===== Lifecycles =====*** //
 
 	virtual void NativePreConstruct() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	// ***===== Attributes =====*** //
 
@@ -40,14 +41,24 @@ protected:
 	FSlateBrush ProgressFillBrush;
 
 	UPROPERTY(EditAnywhere, Category=Attributes)
+	FSlateBrush GhostGlobeBrush;
+
+	UPROPERTY(EditAnywhere, Category=Attributes)
 	FSlateBrush BGBrush;
 
 	UPROPERTY(EditAnywhere, Category=Attributes)
 	FSlateBrush GlassBrush;
-	
+
+	/** If changing, we will interp the ghost globe */
+	bool bChanging = false;
+
+	/** Ghost globe interp target*/
+	float GhostTarget;
+
 	void InitBoxSize();
 	void InitGlobe();
 	void InitImageBrush();
+	void InterpGhostGlobe(float DeltaTime);
 
 	// ***===== Widgets =====*** //
 
@@ -56,6 +67,9 @@ protected:
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UProgressBar> GlobeProgressBar;
+
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UProgressBar> GhostGlobe;
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UImage> Background;

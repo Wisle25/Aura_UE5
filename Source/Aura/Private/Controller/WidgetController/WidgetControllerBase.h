@@ -8,14 +8,14 @@
 
 class AAuraPlayerController;
 class AAuraPlayerState;
-class UAbilitySystemComponent;
+class UAuraAbilitySystemComponent;
 class UAuraAttributeSet;
 
 struct FWidgetControllerParams
 {
 	AAuraPlayerController* PlayerController;
 	AAuraPlayerState* PlayerState;
-	UAbilitySystemComponent* AbilitySystem;
+	UAuraAbilitySystemComponent* AbilitySystem;
 	UAuraAttributeSet* AttributeSet;
 };
 
@@ -42,7 +42,7 @@ protected:
 	TWeakObjectPtr<AAuraPlayerState> PlayerState;
 
 	UPROPERTY()
-	TWeakObjectPtr<UAbilitySystemComponent> AbilitySystem;
+	TWeakObjectPtr<UAuraAbilitySystemComponent> AbilitySystem;
 
 	UPROPERTY()
 	TWeakObjectPtr<UAuraAttributeSet> AttributeSet;

@@ -3,6 +3,15 @@
 #include "Controller/WidgetController/OverlayWidgetController.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 
+UOverlayWidgetController::UOverlayWidgetController()
+{
+    // Init Data
+    static ConstructorHelpers::FObjectFinder<UDataTable> DataAsset(
+        TEXT("/Script/Engine.DataTable'/Game/Blueprints/UI/Data/DT_MessageWidget.DT_MessageWidget'")
+    );
+    MessageWidgetData = DataAsset.Object;
+}
+
 //////////////////////////////////////////////////////////
 // ==================== References ==================== //
 
@@ -21,43 +30,38 @@ void UOverlayWidgetController::BroadcastInitialValues()
 
 void UOverlayWidgetController::BindOnChanges()
 {
-    AbilitySystem->GetGameplayAttributeValueChangeDelegate(
-        AttributeSet->GetHealthAttribute()
-    ).AddUObject(this, &ThisClass::HealthChanged);
+    AbilitySystem->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute())
+        .AddLambda([this](const FOnAttributeChangeData& Data) {
+            OnHealthChanged.Broadcast(Data.NewValue, AttributeSet->GetMaxHealth());
+        });
 
-    AbilitySystem->GetGameplayAttributeValueChangeDelegate(
-        AttributeSet->GetMaxHealthAttribute()
-    ).AddUObject(this, &ThisClass::MaxHealthChanged);
+    AbilitySystem->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxHealthAttribute())
+        .AddLambda([this](const FOnAttributeChangeData& Data) {
+            OnHealthChanged.Broadcast(AttributeSet->GetHealth(), Data.NewValue);
+        });
 
-    AbilitySystem->GetGameplayAttributeValueChangeDelegate(
-        AttributeSet->GetManaAttribute()
-    ).AddUObject(this, &ThisClass::ManaChanged);
+    AbilitySystem->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetManaAttribute())
+        .AddLambda([this](const FOnAttributeChangeData& Data) {
+            OnManaChanged.Broadcast(Data.NewValue, AttributeSet->GetMaxMana());
+        });
 
-    AbilitySystem->GetGameplayAttributeValueChangeDelegate(
-        AttributeSet->GetMaxManaAttribute()
-    ).AddUObject(this, &ThisClass::MaxManaChanged);
+    AbilitySystem->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxManaAttribute())
+        .AddLambda([this](const FOnAttributeChangeData& Data) {
+            OnManaChanged.Broadcast(AttributeSet->GetMana(), Data.NewValue);
+        });
+
+    AbilitySystem->EffectAssetTags.AddLambda(
+        [this](const FGameplayTagContainer& TagContainer) {
+            // Check on the config file is the tag exists
+            FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag("Message");
+
+            for (const auto& Tag : TagContainer)
+            {
+                if (!Tag.MatchesTag(MessageTag)) continue;
+
+                const FUIWidgetRow* Row = MessageWidgetData->FindRow<FUIWidgetRow>(Tag.GetTagName(), TEXT(""));
+                MessageWidget.Broadcast(*Row);
+            }
+        }
+    );
 }
-
-//////////////////////////////////////////////////////////////
-// ==================== GAS Attributes ==================== //
-
-void UOverlayWidgetController::HealthChanged(const FOnAttributeChangeData& Data) const
-{
-    OnHealthChanged.Broadcast(Data.NewValue, AttributeSet->GetMaxHealth());
-}
-
-void UOverlayWidgetController::MaxHealthChanged(const FOnAttributeChangeData& Data) const
-{
-    OnHealthChanged.Broadcast(AttributeSet->GetHealth(), Data.NewValue);
-}
-
-void UOverlayWidgetController::ManaChanged(const FOnAttributeChangeData& Data) const
-{
-    OnManaChanged.Broadcast(Data.NewValue, AttributeSet->GetMaxMana());
-}
-
-void UOverlayWidgetController::MaxManaChanged(const FOnAttributeChangeData& Data) const
-{
-    OnManaChanged.Broadcast(AttributeSet->GetMana(), Data.NewValue);
-}
-
