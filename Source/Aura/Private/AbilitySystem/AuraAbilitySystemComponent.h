@@ -20,9 +20,10 @@ public:
 
 	FEffectAssetTags EffectAssetTags;
 
-protected:
-
 	// ***===== Effects =====*** //
 
 	void AffectApplied(UAbilitySystemComponent* AbilitySystem, const FGameplayEffectSpec& Spec, FActiveGameplayEffectHandle Handler);
+	
+protected:
+
 };

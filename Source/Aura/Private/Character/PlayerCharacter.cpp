@@ -56,8 +56,9 @@ void APlayerCharacter::PossessedBy(AController* NewController)
     Super::PossessedBy(NewController);
 
     // ...
-    InitPlayerReference(NewController);
+    InitPlayerReference();
     InitAbilitySystem();
+    InitDefaultAttributes();
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* Input)
@@ -69,21 +70,31 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* Input)
     EnhancedInput->BindAction(MoveAction.LoadSynchronous(), ETriggerEvent::Triggered, this, &ThisClass::Move);
 }
 
+////////////////////////////////////////////////////////////////
+// ==================== Combat Interface ==================== //
+
+int32 APlayerCharacter::GetLevel() const
+{
+    if (!AuraPlayerState.IsValid()) return 0;
+
+    return AuraPlayerState->GetPlayerLevel();
+}
+
 //////////////////////////////////////////////////////////
 // ==================== References ==================== //
 
-void APlayerCharacter::InitPlayerReference(AController *NewController)
+void APlayerCharacter::InitPlayerReference()
 {
     // Getting reference
-    AuraPlayerController = Cast<AAuraPlayerController>(NewController);
-    AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+    AuraPlayerState      = GetPlayerState<AAuraPlayerState>();
+    AuraPlayerController = Cast<AAuraPlayerController>(AuraPlayerState->GetPlayerController());
 }
 
 void APlayerCharacter::OnRep_PlayerState()
 {
     Super::OnRep_PlayerState();
 
-    InitPlayerReference(GetController());
+    InitPlayerReference();
     InitAbilitySystem();
 }
 
@@ -111,13 +122,6 @@ void APlayerCharacter::Move(const FInputActionValue& InputValue)
 
 void APlayerCharacter::InitAbilitySystem()
 {
-    // ...
-    if (AuraPlayerState.IsValid())
-    {
-        AuraPlayerState->GetAbilitySystem()->InitAbilityActorInfo(AuraPlayerState.Get(), this);
-        AuraPlayerState->GetAbilitySystem()->AbilitySystemOnSet();
-    }
-
     // Init Overlay HUD
     if (AuraPlayerController.IsValid())
     {
@@ -125,6 +129,13 @@ void APlayerCharacter::InitAbilitySystem()
         {
             HUD->InitOverlay({ AuraPlayerController.Get(), AuraPlayerState.Get(), AuraPlayerState->GetAbilitySystem(), AuraPlayerState->GetAttributeSet() });
         }
+    }
+
+    // ...
+    if (AuraPlayerState.IsValid())
+    {
+        AuraPlayerState->GetAbilitySystem()->InitAbilityActorInfo(AuraPlayerState.Get(), this);
+        AuraPlayerState->GetAbilitySystem()->AbilitySystemOnSet();
     }
 }
 

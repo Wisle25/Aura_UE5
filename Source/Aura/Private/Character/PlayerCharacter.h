@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitySystemInterface.h"
 #include "Character/CharacterBase.h"
 #include "PlayerCharacter.generated.h"
 
@@ -15,7 +14,7 @@ class UInputAction;
 struct FInputActionValue;
 
 UCLASS()
-class APlayerCharacter : public ACharacterBase, public IAbilitySystemInterface
+class APlayerCharacter : public ACharacterBase
 {
 	GENERATED_BODY()
 
@@ -26,6 +25,10 @@ public:
 
     virtual void PossessedBy(AController *NewController) override;
     virtual void SetupPlayerInputComponent(UInputComponent *InputComponent) override;
+
+	// ***===== Combat Interface =====*** //
+
+	FORCEINLINE int32 GetLevel() const;
 
 private:
     void AssetInitializer();
@@ -39,7 +42,7 @@ private:
 	TWeakObjectPtr<AAuraPlayerState> AuraPlayerState;
 
 	/** For player state, player controller, etc */
-    void InitPlayerReference(AController *NewController);
+    void InitPlayerReference();
 
 	/** Client version of "PossesedBy" */
 	virtual void OnRep_PlayerState() override;
