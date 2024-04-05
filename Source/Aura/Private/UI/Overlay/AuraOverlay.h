@@ -6,6 +6,8 @@
 #include "UI/AuraUserWidgetBase.h"
 #include "AuraOverlay.generated.h"
 
+class UAttributeMenu;
+class UButtonWidget;
 class UMessageWidget;
 class UProgressGlobeBase;
 
@@ -30,5 +32,13 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UMessageWidget> MessageWidget;
 
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UButtonWidget> AttrButton;
+
 	void BindEvents();
+
+	// ***===== Events =====*** //
+
+	UFUNCTION()
+	void OpenAttributes();
 };

@@ -1,12 +1,32 @@
 // Copyright, Wisle25
 
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "AuraGameplayTags.h"
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
+    // Insert the atributes to map
+    const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
 
+    // Primary
+    AttributeTags.Add(GameplayTags.Attributes_Primary_Intelligence, GetIntelligenceAttribute);
+    AttributeTags.Add(GameplayTags.Attributes_Primary_Resilience, GetResilienceAttribute);
+    AttributeTags.Add(GameplayTags.Attributes_Primary_Strength, GetStrengthAttribute);
+    AttributeTags.Add(GameplayTags.Attributes_Primary_Vigor, GetVigorAttribute);
+
+    // Secondary
+    AttributeTags.Add(GameplayTags.Attributes_Secondary_Armor, GetArmorAttribute);
+    AttributeTags.Add(GameplayTags.Attributes_Secondary_ArmorPen, GetArmorPenAttribute);
+    AttributeTags.Add(GameplayTags.Attributes_Secondary_BlockChance, GetBlockChanceAttribute);
+    AttributeTags.Add(GameplayTags.Attributes_Secondary_CritChance, GetCritChanceAttribute);
+    AttributeTags.Add(GameplayTags.Attributes_Secondary_CritDamage, GetCritDamageAttribute);
+    AttributeTags.Add(GameplayTags.Attributes_Secondary_CritRes, GetCritResAttribute);
+    AttributeTags.Add(GameplayTags.Attributes_Secondary_HealthRegen, GetHealthRegenAttribute);
+    AttributeTags.Add(GameplayTags.Attributes_Secondary_ManaRegen, GetManaRegenAttribute);
+    AttributeTags.Add(GameplayTags.Attributes_Secondary_MaxHealth, GetMaxHealthAttribute);
+    AttributeTags.Add(GameplayTags.Attributes_Secondary_MaxMana, GetMaxManaAttribute);
 }
 
 //////////////////////////////////////////////////////////

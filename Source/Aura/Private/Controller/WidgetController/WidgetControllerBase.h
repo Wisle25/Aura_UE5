@@ -46,4 +46,10 @@ protected:
 
 	UPROPERTY()
 	TWeakObjectPtr<UAuraAttributeSet> AttributeSet;
+
+public:
+	FORCEINLINE AAuraPlayerController* GetPlayerController() const
+	{
+		return PlayerController.Get();
+	}
 };

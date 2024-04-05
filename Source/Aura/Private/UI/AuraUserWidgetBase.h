@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "AuraUserWidgetBase.generated.h"
 
+class AAuraHUD;
 class UWidgetControllerBase;
 
 UCLASS()
@@ -23,4 +24,7 @@ protected:
 
 	UPROPERTY()	
 	TWeakObjectPtr<UWidgetControllerBase> WidgetController;
+
+	UPROPERTY()
+	TWeakObjectPtr<AAuraHUD> AuraHUD;
 };

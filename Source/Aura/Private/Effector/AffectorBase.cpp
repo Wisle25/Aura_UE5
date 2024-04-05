@@ -1,6 +1,6 @@
 // Copyright, Wisle25
 
-#include "Effector/EffectorBase.h"
+#include "Effector/AffectorBase.h"
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
 #include "NiagaraComponent.h"
@@ -8,26 +8,17 @@
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
 
-AEffectorBase::AEffectorBase()
+AAffectorBase::AAffectorBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>("Root Scene");
 	RootComponent->SetMobility(EComponentMobility::Static);
 
-	// Interaction Sphere
-	InteractSphere = CreateDefaultSubobject<USphereComponent>("Collision Sphere");
-	InteractSphere->SetupAttachment(RootComponent);
-	InteractSphere->SetMobility(EComponentMobility::Static);
-	InteractSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	InteractSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	InteractSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
-	InteractSphere->SetGenerateOverlapEvents(true);
-
 	// Interaction Box
 	InteractBox = CreateDefaultSubobject<UBoxComponent>("Collision Box");
-	InteractBox->SetupAttachment(RootComponent);
 	InteractBox->SetMobility(EComponentMobility::Static);
+	InteractBox->SetupAttachment(RootComponent);
 	InteractBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	InteractBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	InteractBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
@@ -46,25 +37,21 @@ AEffectorBase::AEffectorBase()
 	Particle->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-//////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 // ==================== Lifecycles ==================== //
 
-void AEffectorBase::OnConstruction(const FTransform& Transform)
-{
-	DetermineComponents();
-}
-
-void AEffectorBase::BeginPlay()
+void AAffectorBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	DetermineComponents();
 	InitInteraction();
 }
 
 //////////////////////////////////////////////////////////
 // ==================== Components ==================== //
 
-void AEffectorBase::DetermineComponents()
+void AAffectorBase::DetermineComponents()
 {
 	// Visual Type
 	switch (VisualType)
@@ -77,57 +64,39 @@ void AEffectorBase::DetermineComponents()
 		if (Mesh) Mesh->DestroyComponent();
 		break;
 	}
-
-	// Interacting With
-	switch (InteractingWith)
-	{
-	case EInteractingWith::EIW_Box:
-		if (InteractSphere) InteractSphere->DestroyComponent();
-		break;
-	
-	case EInteractingWith::EIW_Sphere:
-		if (InteractBox) InteractBox->DestroyComponent();
-		break;
-	}
 }
 
 ///////////////////////////////////////////////////////////
 // ==================== Interaction ==================== //
 
-void AEffectorBase::InitInteraction()
+void AAffectorBase::InitInteraction()
 {
-	if (InteractSphere)
-	{
-		InteractSphere->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnEnterInteraction);
-		InteractSphere->OnComponentEndOverlap  .AddDynamic(this, &ThisClass::OnLeaveInteraction);
-	}
-
-	if (InteractBox)
+	if (IsValid(InteractBox))
 	{
 		InteractBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnEnterInteraction);
 		InteractBox->OnComponentEndOverlap  .AddDynamic(this, &ThisClass::OnLeaveInteraction);
 	}
 }
 
-void AEffectorBase::OnEnterInteraction(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AAffectorBase::OnEnterInteraction(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	// Applying
 	if (ApplyWhen == EApplyWhen::EAW_BeginOverlap)
 		ApplyEffectTo(OtherActor);
 }
 
-void AEffectorBase::OnLeaveInteraction(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void AAffectorBase::OnLeaveInteraction(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	// Applying
 	if (ApplyWhen == EApplyWhen::EAW_EndOverlap)
 		ApplyEffectTo(OtherActor);
-	
+
 	// Removing
 	if (RemoveWhen == ERemoveWhen::ERW_EndOverlap)
 		RemoveEffectFrom(OtherActor);		
 }
 
-void AEffectorBase::ApplyEffectTo(AActor* Target)
+void AAffectorBase::ApplyEffectTo(AActor* Target)
 {
 	if (IAbilitySystemInterface* ASI = Cast<IAbilitySystemInterface>(Target))
 	{
@@ -155,7 +124,7 @@ void AEffectorBase::ApplyEffectTo(AActor* Target)
 	}
 }
 
-void AEffectorBase::RemoveEffectFrom(AActor* Target)
+void AAffectorBase::RemoveEffectFrom(AActor* Target)
 {
 	if (IAbilitySystemInterface* ASI = Cast<IAbilitySystemInterface>(Target))
 	{

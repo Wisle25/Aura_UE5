@@ -57,8 +57,8 @@ void APlayerCharacter::PossessedBy(AController* NewController)
 
     // ...
     InitPlayerReference();
-    InitAbilitySystem();
     InitDefaultAttributes();
+    InitAbilitySystem();
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* Input)
@@ -122,20 +122,20 @@ void APlayerCharacter::Move(const FInputActionValue& InputValue)
 
 void APlayerCharacter::InitAbilitySystem()
 {
-    // Init Overlay HUD
-    if (AuraPlayerController.IsValid())
-    {
-        if (AAuraHUD* HUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD()))
-        {
-            HUD->InitOverlay({ AuraPlayerController.Get(), AuraPlayerState.Get(), AuraPlayerState->GetAbilitySystem(), AuraPlayerState->GetAttributeSet() });
-        }
-    }
-
     // ...
     if (AuraPlayerState.IsValid())
     {
         AuraPlayerState->GetAbilitySystem()->InitAbilityActorInfo(AuraPlayerState.Get(), this);
         AuraPlayerState->GetAbilitySystem()->AbilitySystemOnSet();
+    }
+
+    // Init Overlay HUD
+    if (AuraPlayerController.IsValid())
+    {
+        if (AAuraHUD* HUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD()))
+        {
+            HUD->InitHUD({ AuraPlayerController.Get(), AuraPlayerState.Get(), AuraPlayerState->GetAbilitySystem(), AuraPlayerState->GetAttributeSet() });
+        }
     }
 }
 

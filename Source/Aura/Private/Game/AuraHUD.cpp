@@ -1,8 +1,10 @@
 // Copyright, Wisle25
 
 #include "Game/AuraHUD.h"
-#include "UI/Overlay/AuraOverlay.h"
+#include "Controller/WidgetController/AttributeMenuController.h"
 #include "Controller/WidgetController/OverlayWidgetController.h"
+#include "UI/Overlay/AuraOverlay.h"
+#include "UI/AttributeMenu/AttributeMenu.h"
 
 AAuraHUD::AAuraHUD()
 {
@@ -12,7 +14,7 @@ AAuraHUD::AAuraHUD()
 
 void AAuraHUD::AssetInitializer()
 {
-    // *** Overlay HUD *** //
+    // * Overlay HUD * //
     static ConstructorHelpers::FClassFinder<UAuraOverlay> OverlayWidgetAsset(
         TEXT("/Game/Blueprints/UI/Overlay/WBP_Overlay")
     );
@@ -22,26 +24,43 @@ void AAuraHUD::AssetInitializer()
         TEXT("/Script/Aura.OverlayWidgetController")
     );
     OverlayWidgetControllerClass = OverlayWidgetControllerAsset.Class;
+
+    // * Attribute HUD * //
+
+    static ConstructorHelpers::FClassFinder<UAttributeMenu> AttributeMenuAsset(
+        TEXT("/Game/Blueprints/UI/AttributeMenu/WBP_AttributeMenu")
+    );
+    AttributeMenuClass = AttributeMenuAsset.Class;
+
+
+    static ConstructorHelpers::FClassFinder<UAttributeMenuController> AttributeMenuControllerAsset(
+        TEXT("/Script/Aura.AttributeMenuController")
+    );
+    AttributeControllerClass = AttributeMenuControllerAsset.Class;
 }
 
 ///////////////////////////////////////////////////////////
 // ==================== Overlay HUD ==================== //
 
-void AAuraHUD::InitOverlay(const FWidgetControllerParams& WCParams)
+void AAuraHUD::InitHUD(const FWidgetControllerParams& WCParams)
 {
     checkf(OverlayWidgetControllerClass, TEXT("OverlayWidgetControllerClass is not set!"))
     checkf(OverlayWidgetClass, TEXT("OverlayWidgeClass is not set!"))
+    checkf(AttributeControllerClass, TEXT("OverlayWidgeClass is not set!"))
+    checkf(AttributeMenuClass, TEXT("AttrMenu is not set!"))
 
     // Controller
-    OverlayWidgetController = NewObject<UOverlayWidgetController>(this, OverlayWidgetControllerClass);
-    OverlayWidgetController->InitReferences(WCParams);
-    OverlayWidgetController->BindOnChanges();
+    OverlayWidgetController = CreateController<UOverlayWidgetController>(WCParams, OverlayWidgetControllerClass);
+    AttributeMenuController = CreateController<UAttributeMenuController>(WCParams, AttributeControllerClass);
 
     // Widget
-    OverlayWidget = CreateWidget<UAuraOverlay>(GetOwningPlayerController(), OverlayWidgetClass);
-    OverlayWidget->SetWidgetController(OverlayWidgetController);
-    OverlayWidget->AddToViewport();
+    AttributeMenu = CreateHUD<UAttributeMenu>(AttributeMenuClass, AttributeMenuController, false);
+    OverlayWidget = CreateHUD<UAuraOverlay>(OverlayWidgetClass, OverlayWidgetController);
+
+    /** We want draw attribute menu ontop of overlay widget */
+    AttributeMenu->AddToViewport();
 
     // Broadcast the initial values
+    AttributeMenuController->BroadcastInitialValues();
     OverlayWidgetController->BroadcastInitialValues();
 }

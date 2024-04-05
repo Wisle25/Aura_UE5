@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameplayEffectTypes.h"
-#include "EffectorBase.generated.h"
+#include "AffectorBase.generated.h"
 
 class IAbilitySystemInterface;
 class UBoxComponent;
@@ -36,25 +36,17 @@ enum class EVisualType : uint8
 	EVT_Particle UMETA(DisplayName="By Particle")
 };
 
-UENUM()
-enum class EInteractingWith : uint8
-{
-	EIW_Sphere UMETA(DisplayName="With Sphere"),
-	EIW_Box	   UMETA(DisplayName="With Box")
-};
-
-UCLASS(Abstract)
-class AEffectorBase : public AActor
+UCLASS()
+class AAffectorBase : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
-	AEffectorBase();
+	AAffectorBase();
 
 protected:
 	// ***===== Lifecycles =====*** //
 
-	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void BeginPlay() override;
 
 	// ***===== Components =====*** //
@@ -64,12 +56,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category=Components)
 	EVisualType VisualType = EVisualType::EVT_Mesh;
 
-	UPROPERTY(EditAnywhere, Category=Components)
-	EInteractingWith InteractingWith = EInteractingWith::EIW_Sphere;
-
 	void DetermineComponents();
 
 	// * Actual Components * //
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USceneComponent> DefaultRoot;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> InteractSphere;

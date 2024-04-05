@@ -51,6 +51,11 @@ class UAuraAttributeSet : public UAttributeSet
 public:
 	UAuraAttributeSet();
 
+	// Map those attributes with the key is the Attribute Tag
+	using FGetAttributeFunc = TBaseStaticDelegateInstance<FGameplayAttribute(), FDefaultDelegateUserPolicy>::FFuncPtr;
+
+	TMap<FGameplayTag, FGetAttributeFunc> AttributeTags;
+
 	// ***===== Lifecycles =====*** //
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
